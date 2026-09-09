@@ -52,10 +52,17 @@ function setupScene(){
  const signatureCanvas=document.createElement('canvas');
  signatureCanvas.width=1024; signatureCanvas.height=128;
  const ctx=signatureCanvas.getContext('2d');
- ctx.fillStyle='#31352c'; ctx.font='italic 76px Georgia';
- ctx.textAlign='center'; ctx.textBaseline='middle';
- ctx.fillText('M.Akhbeth 2026',512,64);
  const texture=new THREE.CanvasTexture(signatureCanvas); texture.colorSpace=THREE.SRGBColorSpace;
+ const drawSignature=()=>{
+   ctx.clearRect(0,0,signatureCanvas.width,signatureCanvas.height);
+   ctx.fillStyle='#31352c'; ctx.font='500 96px "Caveat", cursive';
+   ctx.textAlign='center'; ctx.textBaseline='middle';
+   ctx.fillText('M.Akhbeth 2026',512,64);
+   texture.needsUpdate=true;
+ };
+ drawSignature();
+ // Canvas text must be redrawn once the locally hosted handwriting font is ready.
+ document.fonts.load('500 96px "Caveat"','M.Akhbeth 2026').then(drawSignature).catch(()=>{});
  const signature=new THREE.Mesh(new THREE.PlaneGeometry(1.65,.206),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));
  // Attach the signature to the plinth's front face, below the porcelain vessel.
  pedestal.add(signature); signature.position.set(0,0,.901);
