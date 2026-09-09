@@ -52,22 +52,22 @@ function setupScene(){
  for(let i=0;i<7;i++){const angle=i*Math.PI/3;const x=i===6?0:Math.sin(angle)*.13;const y=i===6?-.39:-.39+Math.cos(angle)*.13;const hole=add(new THREE.CircleGeometry(.036,20),dark);hole.position.set(x,y,-.252+Math.pow(Math.abs(y)/1.18,2.8)*.65);}
  const pedestal=add(new THREE.BoxGeometry(2.4,.25,1.8),new THREE.MeshStandardMaterial({color:0xcdcebf,roughness:.87}),scene);pedestal.position.set(0,-.44,0);
  const signatureCanvas=document.createElement('canvas');
- signatureCanvas.width=1024; signatureCanvas.height=128;
+ signatureCanvas.width=512; signatureCanvas.height=128;
  const ctx=signatureCanvas.getContext('2d');
  const texture=new THREE.CanvasTexture(signatureCanvas); texture.colorSpace=THREE.SRGBColorSpace;
  const drawSignature=()=>{
    ctx.clearRect(0,0,signatureCanvas.width,signatureCanvas.height);
    ctx.fillStyle='#31352c'; ctx.font='500 96px "Caveat", cursive';
-   ctx.textAlign='center'; ctx.textBaseline='middle';
-   ctx.fillText('M.Akhbeth 2026',512,64);
+   ctx.textAlign='right'; ctx.textBaseline='middle';
+   ctx.fillText('M. Akh',480,64);
    texture.needsUpdate=true;
  };
  drawSignature();
  // Canvas text must be redrawn once the locally hosted handwriting font is ready.
- document.fonts.load('500 96px "Caveat"','M.Akhbeth 2026').then(drawSignature).catch(()=>{});
- const signature=new THREE.Mesh(new THREE.PlaneGeometry(1.65,.206),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));
- // Attach the signature to the plinth's front face, below the porcelain vessel.
- pedestal.add(signature); signature.position.set(0,0,.901);
+ document.fonts.load('500 96px "Caveat"','M. Akh').then(drawSignature).catch(()=>{});
+ const signature=new THREE.Mesh(new THREE.PlaneGeometry(.825,.206),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));
+ // Sign the lower-right corner of the plinth's front face.
+ pedestal.add(signature); signature.position.set(.68,-.01,.901);
  const floor=add(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.16}),scene);floor.rotation.x=-Math.PI/2;floor.position.y=-.57;floor.castShadow=false;
  scene.add(new THREE.HemisphereLight(0xffffff,0x898d72,2));const key=new THREE.DirectionalLight(0xfff9e9,4);key.position.set(-3,7,5);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-4;key.shadow.camera.right=4;key.shadow.camera.top=5;key.shadow.camera.bottom=-4;key.shadow.normalBias=.025;key.shadow.bias=-.0001;scene.add(key);
  // Fit the actual sculpture to the viewport, including narrow phone screens.
