@@ -19,13 +19,13 @@ The Sites project is recorded in `.openai/hosting.json`. Keep its project ID whe
 
 ## Netlify production
 
-- Site: https://fountainslop.netlify.app
+- Reserved site URL (not live yet): https://fountainslop.netlify.app
 - Dashboard: https://app.netlify.com/projects/fountainslop
 - Team: `makhbeth`
 - Site ID: `aa49355c-92d5-4851-9cff-9fe080fa8487`
 - Build settings and response headers: `netlify.toml`.
 
-The initial Netlify release is a manual production deployment of `dist/`; Git-based continuous deployment is not configured. To publish updates after `npm run build`, use an authenticated Netlify CLI:
+Initial production deployment is blocked by Netlify: `Account credit usage exceeded - new deploys are blocked until credits are added` (2026-09-09). Both the CLI and official ZIP deploy API returned HTTP 403. No production deploy is live on Netlify yet. Git-based continuous deployment is not configured. Once account credits are restored, publish after `npm run build` with an authenticated Netlify CLI:
 
 ```sh
 netlify deploy --prod --dir dist --no-build --site aa49355c-92d5-4851-9cff-9fe080fa8487
