@@ -26,7 +26,7 @@ The Sites project is recorded in `.openai/hosting.json`. Keep its project ID whe
 - Site ID: `aa49355c-92d5-4851-9cff-9fe080fa8487`
 - Build settings and response headers: `netlify.toml`.
 
-Netlify builds the GitHub repository with `npm run build` and publishes `dist/`. A manually triggered Git-based deployment succeeded on 2026-09-09. Automatic deployment on pushes to `main` is still being repaired: the repository webhook reaches Netlify, but the GitHub App configuration does not trigger builds; removing the installation reference triggers builds that fail during SSH checkout, even with `public_repo: true`. The working GitHub App checkout configuration has been restored pending a fix for automatic triggers.
+Pushes to `main` run `.github/workflows/deploy.yml`, which calls a Netlify build hook stored in the GitHub Actions secret `NETLIFY_BUILD_HOOK`. The workflow can also be run manually from GitHub Actions. Netlify checks out `main` using the existing GitHub App connection, builds with `npm run build`, and publishes `dist/`. The workflow confirms that Netlify accepted the trigger; build and publication status are shown in the Netlify dashboard. The hook URL is a credential and must not be committed or printed in logs.
 
 Domain registration is managed from https://app.netlify.com/projects/fountainslop/domain-management . `fountain.lol` is registered and is the sole custom domain assigned to the project. Its TLS certificate covers `fountain.lol` and `*.fountain.lol`; HTTP redirects to HTTPS (verified on 2026-09-09). Auto-renewal for the previously mistyped domain `funtainslop.lol` was disabled on 2026-09-09. The previous Sites project remains recorded in `.openai/hosting.json`.
 

@@ -1,0 +1,25 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: netlify-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Trigger production build
+        env:
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          test -n "$NETLIFY_BUILD_HOOK"
+          curl --fail --silent --show-error --max-time 60 \
+            --request POST --output /dev/null "$NETLIFY_BUILD_HOOK"
