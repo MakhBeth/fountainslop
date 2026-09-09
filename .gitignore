@@ -3,3 +3,7 @@ dist/
 .artifacts/
 
 .netlify/
+
+.env
+.env.*
+!.env.example

@@ -53,3 +53,7 @@
 
 .touch-device .mouse-instruction { display: none; }
 .touch-device .touch-instruction { display: inline; }
+
+.footer-links { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+.footer-links a { display: inline-flex; align-items: center; text-decoration: none; }
+.footer-links a:hover { text-decoration: underline; text-underline-offset: 4px; }

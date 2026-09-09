@@ -13,7 +13,7 @@ npm run build
 npm run preview
 ```
 
-The production site is static: deploy `dist/`. No API keys, model calls, database, or backend are required. All fonts are self-hosted in `public/fonts/`, with their SIL Open Font Licenses included. DM Sans and Instrument Serif are used for the interface; Caveat is used for the handwritten signature on the plinth. The page loads no third-party resources and includes no analytics, cookies, or browser storage. The sculpture is an original procedural interpretation, not a museum scan. Historical reference: https://smarthistory.org/marcel-duchamp-fountain/
+The production site is static: deploy `dist/`. No API keys, model calls, database, or backend are required. All fonts are self-hosted in `public/fonts/`, with their SIL Open Font Licenses included. DM Sans and Instrument Serif are used for the interface; Caveat is used for the handwritten signature on the plinth. Fonts always load locally. Optional Cloudflare Web Analytics loads only on the production hostnames; local development and previews do not send visits. The application does not use cookies or browser storage. The sculpture is an original procedural interpretation, not a museum scan. Historical reference: https://smarthistory.org/marcel-duchamp-fountain/
 
 The Sites project is recorded in `.openai/hosting.json`. Keep its project ID when publishing subsequent versions.
 
@@ -32,3 +32,12 @@ netlify deploy --prod --dir dist --no-build --site aa49355c-92d5-4851-9cff-9fe08
 ```
 
 Proposed custom domain: `fountainslop.com` (registration and assignment pending). It can be purchased from this project's Domain management screen, which configures DNS and HTTPS automatically. The previous Sites project remains recorded in `.openai/hosting.json`.
+
+
+## Source and visit analytics
+
+GitHub: https://github.com/MakhBeth/fountainslop
+
+The analytics integration follows the Cloudflare beacon approach used in `forfettAIro`, but requires a separate public site token to keep the statistics distinct. Create `fountainslop.com` in Cloudflare Web Analytics and set `VITE_CLOUDFLARE_WEB_ANALYTICS_TOKEN` in your build environment (or an ignored local `.env`). See `.env.example`. This is a public beacon identifier, not an API credential. Rebuild before deploying. Analytics is inactive until a valid token is configured.
+
+Visits are collected only for `fountainslop.com`, `www.fountainslop.com`, and `fountainslop.netlify.app`. Localhost, branch previews, and the old Sites URL do not send analytics. Fonts remain self-hosted. Reference: https://developers.cloudflare.com/web-analytics/get-started/
