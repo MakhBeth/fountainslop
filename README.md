@@ -19,19 +19,15 @@ The Sites project is recorded in `.openai/hosting.json`. Keep its project ID whe
 
 ## Netlify production
 
-- Reserved site URL (not live yet): https://fountainslop.netlify.app
+- Live Netlify URL: https://fountainslop.netlify.app
 - Dashboard: https://app.netlify.com/projects/fountainslop
 - Team: `makhbeth`
 - Site ID: `aa49355c-92d5-4851-9cff-9fe080fa8487`
 - Build settings and response headers: `netlify.toml`.
 
-Initial production deployment is blocked by Netlify: `Account credit usage exceeded - new deploys are blocked until credits are added` (2026-09-09). Both the CLI and official ZIP deploy API returned HTTP 403. No production deploy is live on Netlify yet. Git-based continuous deployment is not configured. Once account credits are restored, publish after `npm run build` with an authenticated Netlify CLI:
+GitHub continuous deployment is connected through the existing Netlify GitHub App installation. Pushes to `main` build with `npm run build` and publish `dist/`. The first Git-based production deployment succeeded on 2026-09-09; the earlier account-credit block no longer prevented that build.
 
-```sh
-netlify deploy --prod --dir dist --no-build --site aa49355c-92d5-4851-9cff-9fe080fa8487
-```
-
-Proposed custom domain: `fountainslop.com` (registration and assignment pending). It can be purchased from this project's Domain management screen, which configures DNS and HTTPS automatically. The previous Sites project remains recorded in `.openai/hosting.json`.
+Domain registration is managed from https://app.netlify.com/projects/fountainslop/domain-management . The intended domain is now `fountain.lol`; adding a domain alias does not register the name. Registration and selection of the final primary domain are pending. The previous Sites project remains recorded in `.openai/hosting.json`.
 
 
 ## Source and visit analytics
