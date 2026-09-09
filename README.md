@@ -19,7 +19,8 @@ The Sites project is recorded in `.openai/hosting.json`. Keep its project ID whe
 
 ## Netlify production
 
-- Live Netlify URL: https://fountainslop.netlify.app
+- Primary site URL: https://fountain.lol
+- Netlify subdomain: https://fountainslop.netlify.app
 - Dashboard: https://app.netlify.com/projects/fountainslop
 - Team: `makhbeth`
 - Site ID: `aa49355c-92d5-4851-9cff-9fe080fa8487`
@@ -27,13 +28,13 @@ The Sites project is recorded in `.openai/hosting.json`. Keep its project ID whe
 
 GitHub continuous deployment is connected through the existing Netlify GitHub App installation. Pushes to `main` build with `npm run build` and publish `dist/`. The first Git-based production deployment succeeded on 2026-09-09; the earlier account-credit block no longer prevented that build.
 
-Domain registration is managed from https://app.netlify.com/projects/fountainslop/domain-management . The intended domain is now `fountain.lol`; adding a domain alias does not register the name. Registration and selection of the final primary domain are pending. The previous Sites project remains recorded in `.openai/hosting.json`.
+Domain registration is managed from https://app.netlify.com/projects/fountainslop/domain-management . `fountain.lol` is registered and is the sole custom domain assigned to the project. Auto-renewal for the previously mistyped domain `funtainslop.lol` was disabled on 2026-09-09. The previous Sites project remains recorded in `.openai/hosting.json`.
 
 
 ## Source and visit analytics
 
 GitHub: https://github.com/MakhBeth/fountainslop
 
-The analytics integration follows the Cloudflare beacon approach used in `forfettAIro`, but requires a separate public site token to keep the statistics distinct. Create `fountainslop.com` in Cloudflare Web Analytics and set `VITE_CLOUDFLARE_WEB_ANALYTICS_TOKEN` in your build environment (or an ignored local `.env`). See `.env.example`. This is a public beacon identifier, not an API credential. Rebuild before deploying. Analytics is inactive until a valid token is configured.
+The analytics integration follows the Cloudflare beacon approach used in `forfettAIro`, but requires a separate public site token to keep the statistics distinct. Create `fountain.lol` in Cloudflare Web Analytics and set `VITE_CLOUDFLARE_WEB_ANALYTICS_TOKEN` in your build environment (or an ignored local `.env`). See `.env.example`. This is a public beacon identifier, not an API credential. Rebuild before deploying. Analytics is inactive until a valid token is configured.
 
-Visits are collected only for `fountainslop.com`, `www.fountainslop.com`, and `fountainslop.netlify.app`. Localhost, branch previews, and the old Sites URL do not send analytics. Fonts remain self-hosted. Reference: https://developers.cloudflare.com/web-analytics/get-started/
+Visits are collected only for `fountain.lol` and `fountainslop.netlify.app`. Localhost, branch previews, and the old Sites URL do not send analytics. Fonts remain self-hosted. Reference: https://developers.cloudflare.com/web-analytics/get-started/
