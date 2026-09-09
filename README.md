@@ -26,7 +26,7 @@ The Sites project is recorded in `.openai/hosting.json`. Keep its project ID whe
 - Site ID: `aa49355c-92d5-4851-9cff-9fe080fa8487`
 - Build settings and response headers: `netlify.toml`.
 
-GitHub continuous deployment is connected through the existing Netlify GitHub App installation. Pushes to `main` build with `npm run build` and publish `dist/`. The first Git-based production deployment succeeded on 2026-09-09; the earlier account-credit block no longer prevented that build.
+GitHub continuous deployment is connected through the Netlify GitHub integration, with a repository webhook delivering push, pull-request, and branch-deletion events to Netlify. Pushes to `main` build with `npm run build` and publish `dist/`. The first Git-based production deployment succeeded on 2026-09-09; the earlier account-credit block no longer prevented that build.
 
 Domain registration is managed from https://app.netlify.com/projects/fountainslop/domain-management . `fountain.lol` is registered and is the sole custom domain assigned to the project. Auto-renewal for the previously mistyped domain `funtainslop.lol` was disabled on 2026-09-09. The previous Sites project remains recorded in `.openai/hosting.json`.
 
