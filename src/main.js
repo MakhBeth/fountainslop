@@ -18,7 +18,7 @@ try { setupScene(); } catch(error) { console.error('3D unavailable',error); $('f
 function setupScene(){
  const host=$('scene');
  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setClearColor(0,0); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.15; host.appendChild(renderer.domElement);
- const scene=new THREE.Scene(); const camera=new THREE.PerspectiveCamera(33,1,.1,80); camera.position.set(4,2.7,7.6);
+ const scene=new THREE.Scene(); const camera=new THREE.PerspectiveCamera(33,1,.1,80); camera.position.set(2.7,2.25,8);
  const pmrem=new THREE.PMREMGenerator(renderer); const room=new RoomEnvironment(); const env=pmrem.fromScene(room,.04);scene.environment=env.texture;room.dispose();pmrem.dispose();
  const controls=new OrbitControls(camera,renderer.domElement); controls.target.set(0,.75,0);controls.enablePan=false;controls.enableZoom=false;controls.minPolarAngle=.45;controls.maxPolarAngle=1.7;controls.enableDamping=true;controls.autoRotate=false;controls.saveState();$('reset').onclick=()=>controls.reset();
  const ceramic=new THREE.MeshPhysicalMaterial({color:0xf6f4e9,roughness:.22,metalness:0,clearcoat:1,clearcoatRoughness:.13,side:THREE.DoubleSide});
@@ -40,7 +40,34 @@ function setupScene(){
  const pedestal=add(new THREE.BoxGeometry(2.4,.25,1.8),new THREE.MeshStandardMaterial({color:0xcdcebf,roughness:.87}),scene);pedestal.position.set(0,-.44,0);
  const floor=add(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.16}),scene);floor.rotation.x=-Math.PI/2;floor.position.y=-.57;floor.castShadow=false;
  scene.add(new THREE.HemisphereLight(0xffffff,0x898d72,2));const key=new THREE.DirectionalLight(0xfff9e9,4);key.position.set(-3,7,5);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-4;key.shadow.camera.right=4;key.shadow.camera.top=5;key.shadow.camera.bottom=-4;key.shadow.normalBias=.025;key.shadow.bias=-.0001;scene.add(key);
- const resize=()=>{const {width,height}=host.getBoundingClientRect();renderer.setSize(width,height);camera.aspect=width/height;camera.updateProjectionMatrix();};new ResizeObserver(resize).observe(host);resize();
+ // Fit the actual sculpture to the viewport, including narrow phone screens.
+ scene.updateMatrixWorld(true);
+ const bounds=new THREE.Box3().setFromObject(sculpture).union(new THREE.Box3().setFromObject(pedestal));
+ const center=bounds.getCenter(new THREE.Vector3());
+ controls.target.copy(center);
+ const viewDirection=new THREE.Vector3(2.7,1.5,8).normalize();
+ const resize=()=>{
+   const {width,height}=host.getBoundingClientRect();
+   if(!width || !height) return;
+   renderer.setSize(width,height); camera.aspect=width/height;
+   camera.position.copy(center).add(viewDirection); camera.lookAt(center); camera.updateMatrixWorld();
+   const right=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0);
+   const up=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1);
+   const tanV=Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+   const tanH=tanV*camera.aspect;
+   // On phones the plinth may bleed off-screen so the vessel remains the focus.
+   const horizontalFill=width<=580 ? 1.32 : .94;
+   let distance=0;
+   for(const x of [bounds.min.x,bounds.max.x]) for(const y of [bounds.min.y,bounds.max.y]) for(const z of [bounds.min.z,bounds.max.z]) {
+     const point=new THREE.Vector3(x,y,z).sub(center);
+     const depth=point.dot(viewDirection);
+     distance=Math.max(distance,depth+Math.abs(point.dot(right))/(tanH*horizontalFill),depth+Math.abs(point.dot(up))/(tanV*.94));
+   }
+   const direction=camera.position.clone().sub(controls.target).normalize();
+   camera.position.copy(center).addScaledVector(direction,distance);
+   camera.updateProjectionMatrix(); controls.update(); controls.saveState();
+ };
+ new ResizeObserver(resize).observe(host); resize();
  let visible=true;new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;}).observe(host);renderer.setAnimationLoop(()=>{if(document.hidden||!visible)return;controls.update();renderer.render(scene,camera);});
  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();$('fallback').hidden=false;});
 }
