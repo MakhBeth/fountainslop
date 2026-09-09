@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 const $ = (id) => document.getElementById(id);
+document.documentElement.classList.toggle('touch-device', navigator.maxTouchPoints > 0);
 let generation = 1;
 const openings = ['A porcelain vessel becomes a monument to', 'The absence of function reveals', 'Through the radical act of doing absolutely nothing, this object embodies', 'An algorithmic intervention in the fragile architecture of', 'A speculative container for'];
 const subjects = ['our collective need to call something a practice', 'the residual anxiety of infinite productivity', 'a post-authentic economy of manufactured significance', 'the deeply human fear of an empty content calendar', 'the invisible labour of pressing a button', 'the liminal space between a breakthrough and a bathroom'];
@@ -21,6 +22,17 @@ function setupScene(){
  const scene=new THREE.Scene(); const camera=new THREE.PerspectiveCamera(33,1,.1,80); camera.position.set(2.7,2.25,8);
  const pmrem=new THREE.PMREMGenerator(renderer); const room=new RoomEnvironment(); const env=pmrem.fromScene(room,.04);scene.environment=env.texture;room.dispose();pmrem.dispose();
  const controls=new OrbitControls(camera,renderer.domElement); controls.target.set(0,.75,0);controls.enablePan=false;controls.enableZoom=false;controls.minPolarAngle=.45;controls.maxPolarAngle=1.7;controls.enableDamping=true;controls.autoRotate=false;controls.saveState();$('reset').onclick=()=>controls.reset();
+ // Leave one-finger gestures to the browser; only a two-finger drag rotates.
+ controls.touches.ONE = -1;
+ controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
+ const reserveTwoFingerGesture = (event) => {
+   if (event.touches.length === 2 && [...event.touches].every(touch => touch.target === renderer.domElement)) {
+     if (event.cancelable) event.preventDefault();
+   }
+ };
+ renderer.domElement.addEventListener('touchstart', reserveTwoFingerGesture, { passive: false });
+ renderer.domElement.addEventListener('touchmove', reserveTwoFingerGesture, { passive: false });
+
  const ceramic=new THREE.MeshPhysicalMaterial({color:0xf6f4e9,roughness:.22,metalness:0,clearcoat:1,clearcoatRoughness:.13,side:THREE.DoubleSide});
  const sculpture=new THREE.Group();scene.add(sculpture);sculpture.position.y=1.05;sculpture.rotation.x=-.23;
  const add=(geo,mat=ceramic,parent=sculpture)=>{const mesh=new THREE.Mesh(geo,mat);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
@@ -36,8 +48,17 @@ function setupScene(){
  for(const sign of [-1,1]){const ear=add(new THREE.SphereGeometry(.22,32,20));ear.scale.set(1,.8,.56);ear.position.set(sign*.55,.96,.12);const screw=add(new THREE.CircleGeometry(.042,20),dark);screw.position.set(sign*.56,.99,.242);}
  const outlet=add(new THREE.CylinderGeometry(.23,.3,.45,40));outlet.position.set(0,-1.14,-.02);outlet.rotation.x=.28;
  for(let i=0;i<7;i++){const angle=i*Math.PI/3;const x=i===6?0:Math.sin(angle)*.13;const y=i===6?-.39:-.39+Math.cos(angle)*.13;const hole=add(new THREE.CircleGeometry(.036,20),dark);hole.position.set(x,y,-.252+Math.pow(Math.abs(y)/1.18,2.8)*.65);}
- const signatureCanvas=document.createElement('canvas');signatureCanvas.width=512;signatureCanvas.height=256;const ctx=signatureCanvas.getContext('2d');ctx.fillStyle='#31352c';ctx.font='italic 62px Georgia';ctx.translate(35,155);ctx.rotate(-.13);ctx.fillText('M. Akhbeth',0,0);ctx.font='45px Georgia';ctx.fillText('2026',90,57);const texture=new THREE.CanvasTexture(signatureCanvas);texture.colorSpace=THREE.SRGBColorSpace;const signature=add(new THREE.PlaneGeometry(.72,.36),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,side:THREE.DoubleSide}));signature.position.set(.55,-.47,.322);signature.rotation.z=-.55;signature.rotation.y=.37;
  const pedestal=add(new THREE.BoxGeometry(2.4,.25,1.8),new THREE.MeshStandardMaterial({color:0xcdcebf,roughness:.87}),scene);pedestal.position.set(0,-.44,0);
+ const signatureCanvas=document.createElement('canvas');
+ signatureCanvas.width=1024; signatureCanvas.height=128;
+ const ctx=signatureCanvas.getContext('2d');
+ ctx.fillStyle='#31352c'; ctx.font='italic 76px Georgia';
+ ctx.textAlign='center'; ctx.textBaseline='middle';
+ ctx.fillText('M.Akhbeth 2026',512,64);
+ const texture=new THREE.CanvasTexture(signatureCanvas); texture.colorSpace=THREE.SRGBColorSpace;
+ const signature=new THREE.Mesh(new THREE.PlaneGeometry(1.65,.206),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));
+ // Attach the signature to the plinth's front face, below the porcelain vessel.
+ pedestal.add(signature); signature.position.set(0,0,.901);
  const floor=add(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.16}),scene);floor.rotation.x=-Math.PI/2;floor.position.y=-.57;floor.castShadow=false;
  scene.add(new THREE.HemisphereLight(0xffffff,0x898d72,2));const key=new THREE.DirectionalLight(0xfff9e9,4);key.position.set(-3,7,5);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-4;key.shadow.camera.right=4;key.shadow.camera.top=5;key.shadow.camera.bottom=-4;key.shadow.normalBias=.025;key.shadow.bias=-.0001;scene.add(key);
  // Fit the actual sculpture to the viewport, including narrow phone screens.

@@ -17,7 +17,7 @@
 .object-tag span { font-size: 9px; letter-spacing: 1.2px; }
 .object-tag p { font-size: 11px; line-height: 1.6; color: #76796c; margin: 8px 0 0; }
 .rotate { grid-column: 2; grid-row: 3; align-self: end; justify-self: center; font-size: 10px; color: #6d7063; white-space: nowrap; }
-.rotate>span { font-size: 19px; margin-right: 9px; }
+.rotate>span:first-child { font-size: 19px; margin-right: 9px; }
 .rotate button { background: none; border: 0; margin-left: 8px; font-size: 18px; min-width: 44px; min-height: 44px; }
 .edition { grid-column: 3; grid-row: 3; align-self: end; justify-self: end; font-size: 9px; letter-spacing: 1px; padding-bottom: 12px; }
 .edition strong { font-weight: 400; font-size: 18px; margin: 0 5px; }
@@ -45,3 +45,12 @@
 
 .caption-panel .eyebrow { font-size: 13px; line-height: 1.6; letter-spacing: .7px; }
 .interpretation > .eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; }
+
+.touch-instruction { display: none; }
+@media (pointer: coarse) {
+  .mouse-instruction { display: none; }
+  .touch-instruction { display: inline; }
+}
+
+.touch-device .mouse-instruction { display: none; }
+.touch-device .touch-instruction { display: inline; }
